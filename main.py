@@ -13,10 +13,10 @@ def predict(xs):
         return (weights*xs+biases)
 
 # ys=predict(house_data.x)
-def plot_line(xs,ys):
-        ax.lines.clear()  # Remove previous line
+def plot_line(ys):
+        ax.lines.clear()  
         ax.plot(house_data.x, ys, color="red")
-        pt.pause(0.1)  # Pause to visually update the plot
+        pt.pause(0.1)  
     
 def cost(y,ys):
         errors=(np.array(y)-np.array(ys))**2
@@ -35,16 +35,14 @@ def update_bias(y,ys):
 
 
 fig =pt.figure()
-
-# print(cost(house_data.y,ys))
 ax=fig.gca()
 ax.set_xlim([0,100])
 ax.set_ylim([0,100])
+ax.scatter(house_data.x,house_data.y,s=5)
 
 # plot_line(house_data.x)
 
 # ax.scatter(house_data.x,house_data.y,s=5)
-ax.scatter(house_data.x,house_data.y,s=5)
 
 for i in range(200):
         print("iteration",i);
@@ -53,7 +51,7 @@ for i in range(200):
         update_bias(house_data.y,ys)
         update_weight(house_data.y,ys)
    
-        plot_line(house_data.x,ys)
+        plot_line(ys)
         
         
 
