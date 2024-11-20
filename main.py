@@ -1,59 +1,54 @@
+import matplotlib.pyplot as pt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as pt
+from matplotlib.widgets import Slider
 
+house_data=pd.read_csv("./data/data_for_lr.csv")
 
-src="data/data_for_lr.csv"
-
-house_data=pd.read_csv(src)
 weights=np.random.uniform(0,1);
 biases=np.random.uniform(0,1);
-lr=0.0001
-def predict(xs):
-        return (weights*xs+biases)
 
-# ys=predict(house_data.x)
-def plot_line(ys):
-        ax.lines.clear()  
-        ax.plot(house_data.x, ys, color="red")
-        pt.pause(0.1)  
+
+fig ,ax=pt.subplots()
+fig.subplots_adjust(left=0.25,bottom=0.25)
+axes=pt.axes([0.25,0.01,0.65,0.2],facecolor="red")
+slide=Slider(axes,label="Weights",valmin=0,valmax=5,valinit=weights)
+class Linear_Regerssion():
+    def __init__(self,house_data,weights,biases):
+        self.w=weights
+        self.b=biases
+        self.x=house_data.x
+        self.y=house_data.y
+    def predict(self):
+        self.ys=self.w*self.x +self.b
+        return self.ys
+    def plot(self):
+        ax.scatter(self.x,self.y,c="b",s=5,)
+        self.line ,=ax.plot(self.x,self.ys,c="r")
+        ax.set_xlabel("square feet")
+        ax.set_ylabel("cost")
+    def cost(self):
+        square_difference=(np.array(self.y)-np.array(self.ys))**2
+        cost_value=(np.sum(square_difference))/(2*len(self.ys))
+        return cost_value
     
-def cost(y,ys):
-        errors=(np.array(y)-np.array(ys))**2
-        update_error=np.sum(errors)/(2*len(ys))
-        return update_error
-
-def update_weight(y,ys):
-        global weights
-        updated_weights=np.sum(np.array(house_data.x)*(np.array(y)-np.array(ys)))/len(ys)
-        weights+=lr*updated_weights
-        
-def update_bias(y,ys):
-        global biases
-        updated_biases=np.sum(np.array(y)-np.array(ys))/len(ys)
-        biases+=lr*updated_biases       
-
-
-fig =pt.figure()
-ax=fig.gca()
-ax.set_xlim([0,100])
-ax.set_ylim([0,100])
-ax.scatter(house_data.x,house_data.y,s=5)
-
-# plot_line(house_data.x)
-
-# ax.scatter(house_data.x,house_data.y,s=5)
-
-for i in range(200):
-        print("iteration",i);
-        ys=predict(house_data.x)
-        print(cost(house_data.y,ys))
-        update_bias(house_data.y,ys)
-        update_weight(house_data.y,ys)
-   
-        plot_line(ys)
-        
         
 
+def Update_Weights_Manually(val):
+    test.w=slide.val
+    ys=test.predict()
+    test.line.set_ydata(ys)
+    
+    print(test.cost())
+    
+    fig.canvas.draw_idle()
+    
 
+
+
+test=Linear_Regerssion(house_data,weights,biases)
+test.predict()
+test.plot()
+ax.legend()
+slide.on_changed(Update_Weights_Manually)
 pt.show()
